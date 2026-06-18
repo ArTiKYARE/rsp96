@@ -12,7 +12,8 @@ REMOTE_USER = os.getenv("RSP96_USER", "root").strip()
 REMOTE_PASSWORD = os.getenv("RSP96_PASSWORD", "").strip()
 REMOTE_BASE = os.getenv("RSP96_REMOTE_BASE", "/var/www/rsp96").strip()
 REMOTE_RELOAD_CMD = os.getenv(
-    "RSP96_RELOAD_CMD", "systemctl reload nginx || service nginx reload || true"
+    "RSP96_RELOAD_CMD",
+    "docker exec safescan-caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile",
 ).strip()
 
 DIST_DIR = Path("dist")
@@ -73,7 +74,7 @@ def deploy_ssh() -> None:
             "  export RSP96_USER=root\n"
             "  export RSP96_PASSWORD=your_password\n"
             "  export RSP96_REMOTE_BASE=/var/www/rsp96  # optional\n"
-            "  export RSP96_RELOAD_CMD='systemctl reload nginx'  # optional\n"
+            "  export RSP96_RELOAD_CMD='docker exec safescan-caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile'  # optional\n"
         )
         sys.exit(1)
 

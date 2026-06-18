@@ -1,0 +1,175 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "ООО «РемСтройПроект» РСП РемСтройПроект" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "ООО «РемСтройПроект»" [ref=e6]
+        - generic [ref=e7]:
+          - paragraph [ref=e8]: РСП
+          - paragraph [ref=e9]: РемСтройПроект
+      - navigation [ref=e10]:
+        - link "Главная" [ref=e11] [cursor=pointer]:
+          - /url: /
+        - link "О компании" [ref=e12] [cursor=pointer]:
+          - /url: /about-us/
+        - link "Услуги" [ref=e13] [cursor=pointer]:
+          - /url: /services/
+        - link "Портфолио" [ref=e14] [cursor=pointer]:
+          - /url: /history/
+        - link "Вакансии" [ref=e15] [cursor=pointer]:
+          - /url: /vacancies/
+        - link "Документы" [ref=e16] [cursor=pointer]:
+          - /url: /docs/
+        - link "Контакты" [ref=e17] [cursor=pointer]:
+          - /url: /contacts/
+      - link "Оставить заявку" [ref=e19] [cursor=pointer]:
+        - /url: /contacts/
+  - main [ref=e20]:
+    - generic [ref=e23]:
+      - heading "Контакты" [level=1] [ref=e24]
+      - paragraph [ref=e25]: Свяжитесь с нами удобным способом
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - link "Телефон +7 343 304-05-06" [ref=e31] [cursor=pointer]:
+            - /url: tel:+73433040506
+            - img [ref=e33]
+            - generic [ref=e35]:
+              - paragraph [ref=e36]: Телефон
+              - paragraph [ref=e37]: +7 343 304-05-06
+          - link "Email rsp@rsp96.ru" [ref=e38] [cursor=pointer]:
+            - /url: mailto:rsp@rsp96.ru
+            - img [ref=e40]
+            - generic [ref=e43]:
+              - paragraph [ref=e44]: Email
+              - paragraph [ref=e45]: rsp@rsp96.ru
+          - generic [ref=e46]:
+            - img [ref=e48]
+            - generic [ref=e51]:
+              - paragraph [ref=e52]: Адрес
+              - paragraph [ref=e53]: 620102, г. Екатеринбург, ул. Радищева, д. 55, офис 6
+        - generic [ref=e54]:
+          - heading "Руководство" [level=2] [ref=e55]
+          - generic [ref=e56]:
+            - generic [ref=e58]:
+              - img [ref=e60]
+              - generic [ref=e63]:
+                - paragraph [ref=e64]: Директор
+                - paragraph [ref=e65]: Костин Артём Константинович
+                - paragraph [ref=e66]: Управляющий Индивидуальный Предприниматель
+            - generic [ref=e68]:
+              - img [ref=e70]
+              - generic [ref=e73]:
+                - paragraph [ref=e74]: Исполнительный директор
+                - paragraph [ref=e75]: Романов Александр Владимирович
+      - generic [ref=e76]:
+        - heading "Написать нам" [level=2] [ref=e77]
+        - generic [ref=e80]:
+          - generic [ref=e81]:
+            - generic [ref=e82]: Имя
+            - textbox "Имя" [ref=e83]:
+              - /placeholder: Ваше имя
+          - generic [ref=e84]:
+            - generic [ref=e85]: Телефон
+            - textbox "Телефон" [ref=e86]:
+              - /placeholder: +7 (___) ___-__-__
+          - generic [ref=e87]:
+            - generic [ref=e88]: Email
+            - textbox "Email" [ref=e89]:
+              - /placeholder: email@example.com
+          - generic [ref=e90]:
+            - generic [ref=e91]: Сообщение
+            - textbox "Сообщение" [ref=e92]:
+              - /placeholder: Расскажите о задаче...
+          - generic [ref=e93]:
+            - checkbox [ref=e94]
+            - checkbox [ref=e95]
+            - generic [ref=e97]: Я согласен на обработку персональных данных
+          - button "Отправить заявку" [ref=e98]:
+            - img
+            - text: Отправить заявку
+    - generic [ref=e102]:
+      - img [ref=e103]
+      - heading "Мы находимся в Екатеринбурге" [level=2] [ref=e106]
+      - paragraph [ref=e107]: 620102, г. Екатеринбург, ул. Радищева, д. 55, офис 6
+      - paragraph [ref=e108]: Интерактивную карту можно подключить позже через API Яндекс.Карт или 2GIS.
+  - contentinfo [ref=e109]:
+    - generic [ref=e110]:
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - link "ООО «РемСтройПроект» РСП РемСтройПроект" [ref=e113] [cursor=pointer]:
+            - /url: /
+            - img "ООО «РемСтройПроект»" [ref=e115]
+            - generic [ref=e116]:
+              - paragraph [ref=e117]: РСП
+              - paragraph [ref=e118]: РемСтройПроект
+          - paragraph [ref=e119]: Не просто доставка — связь регионов. Для гигантов и тех, кто ими становится.
+          - generic [ref=e120]:
+            - link "+7 343 304-05-06" [ref=e121] [cursor=pointer]:
+              - /url: tel:+73433040506
+              - img [ref=e122]
+              - text: +7 343 304-05-06
+            - link "rsp@rsp96.ru" [ref=e124] [cursor=pointer]:
+              - /url: mailto:rsp@rsp96.ru
+              - img [ref=e125]
+              - text: rsp@rsp96.ru
+            - paragraph [ref=e128]:
+              - img [ref=e129]
+              - text: 620102, г. Екатеринбург, ул. Радищева, д. 55, офис 6
+        - generic [ref=e132]:
+          - heading "Меню" [level=4] [ref=e133]
+          - list [ref=e134]:
+            - listitem [ref=e135]:
+              - link "Главная" [ref=e136] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e137]:
+              - link "О компании" [ref=e138] [cursor=pointer]:
+                - /url: /about-us/
+            - listitem [ref=e139]:
+              - link "Услуги" [ref=e140] [cursor=pointer]:
+                - /url: /services/
+            - listitem [ref=e141]:
+              - link "Портфолио" [ref=e142] [cursor=pointer]:
+                - /url: /history/
+            - listitem [ref=e143]:
+              - link "Вакансии" [ref=e144] [cursor=pointer]:
+                - /url: /vacancies/
+            - listitem [ref=e145]:
+              - link "Документы" [ref=e146] [cursor=pointer]:
+                - /url: /docs/
+            - listitem [ref=e147]:
+              - link "Контакты" [ref=e148] [cursor=pointer]:
+                - /url: /contacts/
+        - generic [ref=e149]:
+          - heading "Услуги" [level=4] [ref=e150]
+          - list [ref=e151]:
+            - listitem [ref=e152]:
+              - link "Перевозка груза по «зимнику»" [ref=e153] [cursor=pointer]:
+                - /url: /services/zimnik/
+            - listitem [ref=e154]:
+              - link "Перевозка людей" [ref=e155] [cursor=pointer]:
+                - /url: /services/people/
+            - listitem [ref=e156]:
+              - link "Поставка инертных материалов" [ref=e157] [cursor=pointer]:
+                - /url: /services/inert/
+            - listitem [ref=e158]:
+              - link "Погрузочно-разгрузочные работы" [ref=e159] [cursor=pointer]:
+                - /url: /services/loading/
+        - generic [ref=e160]:
+          - heading "Документы" [level=4] [ref=e161]
+          - list [ref=e162]:
+            - listitem [ref=e163]:
+              - link "Политика конфиденциальности" [ref=e164] [cursor=pointer]:
+                - /url: /privacy-policy/
+            - listitem [ref=e165]:
+              - link "Согласие на обработку данных" [ref=e166] [cursor=pointer]:
+                - /url: /consent/
+            - listitem [ref=e167]:
+              - link "Использование cookie" [ref=e168] [cursor=pointer]:
+                - /url: /cookie/
+      - separator [ref=e169]
+      - generic [ref=e170]:
+        - paragraph [ref=e171]: Материалы сайта носят информационный характер и не являются публичной офертой, определяемой положениями Статьи 437 Гражданского кодекса РФ.
+        - paragraph [ref=e172]: © 2026 ООО «РемСтройПроект». Все права защищены.
+  - button "Open Next.js Dev Tools" [ref=e178] [cursor=pointer]:
+    - img [ref=e179]

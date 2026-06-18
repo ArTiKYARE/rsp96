@@ -1,0 +1,163 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "ООО «РемСтройПроект» РСП РемСтройПроект" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "ООО «РемСтройПроект»" [ref=e6]
+        - generic [ref=e7]:
+          - paragraph [ref=e8]: РСП
+          - paragraph [ref=e9]: РемСтройПроект
+      - navigation [ref=e10]:
+        - link "Главная" [ref=e11] [cursor=pointer]:
+          - /url: /
+        - link "О компании" [ref=e12] [cursor=pointer]:
+          - /url: /about-us/
+        - link "Услуги" [ref=e13] [cursor=pointer]:
+          - /url: /services/
+        - link "Портфолио" [ref=e14] [cursor=pointer]:
+          - /url: /history/
+        - link "Вакансии" [ref=e15] [cursor=pointer]:
+          - /url: /vacancies/
+        - link "Документы" [ref=e16] [cursor=pointer]:
+          - /url: /docs/
+        - link "Контакты" [ref=e17] [cursor=pointer]:
+          - /url: /contacts/
+      - generic [ref=e18]:
+        - link "+7 343 304-05-06" [ref=e20] [cursor=pointer]:
+          - /url: tel:+73433040506
+          - img [ref=e21]
+          - text: +7 343 304-05-06
+        - button "Переключить тему" [ref=e23]:
+          - img
+        - link "Оставить заявку" [ref=e24] [cursor=pointer]:
+          - /url: /contacts/
+  - main [ref=e25]:
+    - generic [ref=e28]:
+      - heading "Услуги" [level=1] [ref=e29]
+      - paragraph [ref=e30]: Комплексные логистические решения для работы в экстремальных климатических условиях Крайнего Севера и Арктики.
+    - generic [ref=e33]:
+      - link "Перевозка груза по «зимнику» Перевозка груза по «зимнику» Надёжная доставка грузов по зимним дорогам в труднодоступные районы Крайнего Севера. Подробнее" [ref=e34] [cursor=pointer]:
+        - /url: /services/zimnik/
+        - generic [ref=e35]:
+          - img "Перевозка груза по «зимнику»" [ref=e37]
+          - generic [ref=e39]:
+            - heading "Перевозка груза по «зимнику»" [level=2] [ref=e40]
+            - paragraph [ref=e41]: Надёжная доставка грузов по зимним дорогам в труднодоступные районы Крайнего Севера.
+            - generic [ref=e42]:
+              - text: Подробнее
+              - img [ref=e43]
+      - link "Перевозка людей Перевозка людей Безопасная доставка персонала на удалённые объекты и месторождения Севера. Подробнее" [ref=e45] [cursor=pointer]:
+        - /url: /services/people/
+        - generic [ref=e46]:
+          - img "Перевозка людей" [ref=e48]
+          - generic [ref=e50]:
+            - heading "Перевозка людей" [level=2] [ref=e51]
+            - paragraph [ref=e52]: Безопасная доставка персонала на удалённые объекты и месторождения Севера.
+            - generic [ref=e53]:
+              - text: Подробнее
+              - img [ref=e54]
+      - link "Поставка инертных материалов Поставка инертных материалов Доставка щебня, песка, гравия и других строительных материалов в районы Севера. Подробнее" [ref=e56] [cursor=pointer]:
+        - /url: /services/inert/
+        - generic [ref=e57]:
+          - img "Поставка инертных материалов" [ref=e59]
+          - generic [ref=e61]:
+            - heading "Поставка инертных материалов" [level=2] [ref=e62]
+            - paragraph [ref=e63]: Доставка щебня, песка, гравия и других строительных материалов в районы Севера.
+            - generic [ref=e64]:
+              - text: Подробнее
+              - img [ref=e65]
+      - link "Погрузочно-разгрузочные работы Погрузочно-разгрузочные работы Профессиональные ПРР на удалённых объектах и месторождениях Севера. Подробнее" [ref=e67] [cursor=pointer]:
+        - /url: /services/loading/
+        - generic [ref=e68]:
+          - img "Погрузочно-разгрузочные работы" [ref=e70]
+          - generic [ref=e72]:
+            - heading "Погрузочно-разгрузочные работы" [level=2] [ref=e73]
+            - paragraph [ref=e74]: Профессиональные ПРР на удалённых объектах и месторождениях Севера.
+            - generic [ref=e75]:
+              - text: Подробнее
+              - img [ref=e76]
+    - generic [ref=e79]:
+      - heading "Нужна консультация?" [level=2] [ref=e80]
+      - paragraph [ref=e81]: Свяжитесь с нами, чтобы обсудить задачу и получить индивидуальное предложение.
+      - link "Оставить заявку" [ref=e82] [cursor=pointer]:
+        - /url: /contacts/
+  - contentinfo [ref=e83]:
+    - generic [ref=e84]:
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - link "ООО «РемСтройПроект» РСП РемСтройПроект" [ref=e87] [cursor=pointer]:
+            - /url: /
+            - img "ООО «РемСтройПроект»" [ref=e89]
+            - generic [ref=e90]:
+              - paragraph [ref=e91]: РСП
+              - paragraph [ref=e92]: РемСтройПроект
+          - paragraph [ref=e93]: Не просто доставка — связь регионов. Для гигантов и тех, кто ими становится.
+          - generic [ref=e94]:
+            - link "+7 343 304-05-06" [ref=e95] [cursor=pointer]:
+              - /url: tel:+73433040506
+              - img [ref=e96]
+              - text: +7 343 304-05-06
+            - link "rsp@rsp96.ru" [ref=e98] [cursor=pointer]:
+              - /url: mailto:rsp@rsp96.ru
+              - img [ref=e99]
+              - text: rsp@rsp96.ru
+            - paragraph [ref=e102]:
+              - img [ref=e103]
+              - text: 620102, г. Екатеринбург, ул. Радищева, д. 55, офис 6
+        - generic [ref=e106]:
+          - heading "Меню" [level=4] [ref=e107]
+          - list [ref=e108]:
+            - listitem [ref=e109]:
+              - link "Главная" [ref=e110] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e111]:
+              - link "О компании" [ref=e112] [cursor=pointer]:
+                - /url: /about-us/
+            - listitem [ref=e113]:
+              - link "Услуги" [ref=e114] [cursor=pointer]:
+                - /url: /services/
+            - listitem [ref=e115]:
+              - link "Портфолио" [ref=e116] [cursor=pointer]:
+                - /url: /history/
+            - listitem [ref=e117]:
+              - link "Вакансии" [ref=e118] [cursor=pointer]:
+                - /url: /vacancies/
+            - listitem [ref=e119]:
+              - link "Документы" [ref=e120] [cursor=pointer]:
+                - /url: /docs/
+            - listitem [ref=e121]:
+              - link "Контакты" [ref=e122] [cursor=pointer]:
+                - /url: /contacts/
+        - generic [ref=e123]:
+          - heading "Услуги" [level=4] [ref=e124]
+          - list [ref=e125]:
+            - listitem [ref=e126]:
+              - link "Перевозка груза по «зимнику»" [ref=e127] [cursor=pointer]:
+                - /url: /services/zimnik/
+            - listitem [ref=e128]:
+              - link "Перевозка людей" [ref=e129] [cursor=pointer]:
+                - /url: /services/people/
+            - listitem [ref=e130]:
+              - link "Поставка инертных материалов" [ref=e131] [cursor=pointer]:
+                - /url: /services/inert/
+            - listitem [ref=e132]:
+              - link "Погрузочно-разгрузочные работы" [ref=e133] [cursor=pointer]:
+                - /url: /services/loading/
+        - generic [ref=e134]:
+          - heading "Документы" [level=4] [ref=e135]
+          - list [ref=e136]:
+            - listitem [ref=e137]:
+              - link "Политика конфиденциальности" [ref=e138] [cursor=pointer]:
+                - /url: /privacy-policy/
+            - listitem [ref=e139]:
+              - link "Согласие на обработку данных" [ref=e140] [cursor=pointer]:
+                - /url: /consent/
+            - listitem [ref=e141]:
+              - link "Использование cookie" [ref=e142] [cursor=pointer]:
+                - /url: /cookie/
+      - separator [ref=e143]
+      - generic [ref=e144]:
+        - paragraph [ref=e145]: Материалы сайта носят информационный характер и не являются публичной офертой, определяемой положениями Статьи 437 Гражданского кодекса РФ.
+        - paragraph [ref=e146]: © 2026 ООО «РемСтройПроект». Все права защищены.
+  - button "Open Next.js Dev Tools" [ref=e152] [cursor=pointer]:
+    - img [ref=e153]

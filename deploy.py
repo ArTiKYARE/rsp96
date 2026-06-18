@@ -85,15 +85,42 @@ def deploy_ssh() -> None:
     stdin, stdout, stderr = client.exec_command(f"mkdir -p {REMOTE_BASE} && rm -rf {REMOTE_BASE}/*")
     stdout.channel.recv_exit_status()
 
+    def ensure_remote_dir(sftp_client, remote_dir: str) -> None:
+        """Рекурсивно создаёт удалённые директории (mkdir -p через SFTP)."""
+        dirs = []
+        current = remote_dir
+        while current and current != "/":
+            try:
+                sftp_client.stat(current)
+                break
+            except IOError:
+                dirs.append(current)
+                current = os.path.dirname(current)
+        for d in reversed(dirs):
+            sftp_client.mkdir(d)
+
     sftp = client.open_sftp()
     try:
+        # Создаём базовую директорию и очищаем старое содержимое
+        try:
+            sftp.mkdir(REMOTE_BASE)
+        except IOError:
+            pass
+        for item in sftp.listdir(REMOTE_BASE):
+            item_path = f"{REMOTE_BASE}/{item}"
+            try:
+                sftp.remove(item_path)
+            except IOError:
+                import paramiko.sftp_client as sftpc
+                sftp.rmdir(item_path)
+
         uploaded = 0
         for local_path in DIST_DIR.rglob("*"):
             if local_path.is_file():
                 relative = local_path.relative_to(DIST_DIR).as_posix()
                 remote_path = f"{REMOTE_BASE}/{relative}"
                 remote_dir = os.path.dirname(remote_path)
-                client.exec_command(f"mkdir -p {remote_dir}")
+                ensure_remote_dir(sftp, remote_dir)
                 sftp.put(str(local_path), remote_path)
                 uploaded += 1
         print(f"Uploaded {uploaded} file(s) to {REMOTE_HOST}:{REMOTE_BASE}")

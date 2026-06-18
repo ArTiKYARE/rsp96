@@ -7,6 +7,7 @@ import { ArrowRight, Phone } from "lucide-react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/lib/data";
+import { PartnerLogos } from "./partner-logos";
 
 export function Hero() {
   return (
@@ -83,6 +84,8 @@ export function Hero() {
               {siteConfig.phone}
             </a>
           </motion.div>
+
+          <PartnerLogos />
         </div>
       </div>
 

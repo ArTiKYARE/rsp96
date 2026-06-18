@@ -1,6 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /api/
-
-Host: https://rsp96.ru
-Sitemap: https://rsp96.ru/sitemap.xml

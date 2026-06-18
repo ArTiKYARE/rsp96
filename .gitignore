@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# custom
+/dist
+.playwright-mcp/
+__pycache__/
+*.pyc
+deploy_output.txt
+data/about.html
+data/site_content_summary.txt

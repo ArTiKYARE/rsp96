@@ -3,6 +3,7 @@ import { Phone, Mail, MapPin, User } from "lucide-react";
 
 import { siteConfig, contacts } from "@/lib/data";
 import { ContactForm } from "@/components/sections/contact-form";
+import { MapSection } from "@/components/sections/map-section";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
@@ -96,16 +97,11 @@ export default function ContactsPage() {
 
       <section className="py-16 lg:py-24 bg-muted/30">
         <div className="container">
-          <div className="rounded-3xl overflow-hidden shadow-xl h-[400px] bg-muted flex items-center justify-center">
-            <div className="text-center p-8">
-              <MapPin className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Мы находимся в Екатеринбурге</h2>
-              <p className="text-muted-foreground max-w-md">{siteConfig.address}</p>
-              <p className="text-sm text-muted-foreground mt-4">
-                Интерактивную карту можно подключить позже через API Яндекс.Карт или 2GIS.
-              </p>
-            </div>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-2">Мы находимся в Екатеринбурге</h2>
+            <p className="text-muted-foreground">{siteConfig.address}</p>
           </div>
+          <MapSection />
         </div>
       </section>
     </>

@@ -7,12 +7,13 @@ from pathlib import Path
 import paramiko
 
 # --- Конфигурация ---
-REMOTE_HOST = os.getenv("RSP96_HOST", "")
-REMOTE_USER = os.getenv("RSP96_USER", "root")
-REMOTE_PASSWORD = os.getenv("RSP96_PASSWORD", "")
-REMOTE_BASE = os.getenv("RSP96_REMOTE_BASE", "/var/www/rsp96")
+REMOTE_HOST = os.getenv("RSP96_HOST", "").strip()
+REMOTE_USER = os.getenv("RSP96_USER", "root").strip()
+REMOTE_PASSWORD = os.getenv("RSP96_PASSWORD", "").strip()
+REMOTE_BASE = os.getenv("RSP96_REMOTE_BASE", "/var/www/rsp96").strip()
 REMOTE_RELOAD_CMD = os.getenv(
-    "RSP96_RELOAD_CMD", "systemctl reload nginx || service nginx reload || true")
+    "RSP96_RELOAD_CMD", "systemctl reload nginx || service nginx reload || true"
+).strip()
 
 DIST_DIR = Path("dist")
 

@@ -129,6 +129,10 @@
   }
 }
 
+@utility container {
+  margin-inline: auto;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

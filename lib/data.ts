@@ -192,17 +192,6 @@ export const geography = {
   image: "/images/20240805_214421-e1751262510870.jpg",
 };
 
-export const gallery = [
-  { src: "/images/photo_2026-04-06_14-38-59-2.jpg", alt: "Работа РСП на Севере" },
-  { src: "/images/photo_2026-04-06_14-38-59.jpg", alt: "Портовая инфраструктура" },
-  { src: "/images/photo_2026-04-06_14-39-00-827x1024.jpg", alt: "Техника РСП" },
-  { src: "/images/photo_2026-04-06_14-39-01-2.jpg", alt: "Грузоперевозки" },
-  { src: "/images/photo_2026-04-06_14-39-01.jpg", alt: "Работа на объекте" },
-  { src: "/images/photo_2026-04-06_14-39-02-2-1024x768.jpg", alt: "Речная перевозка" },
-  { src: "/images/photo_2026-04-06_14-39-02.jpg", alt: "Баржа с грузом" },
-  { src: "/images/photo_2026-04-06_14-39-04-1024x768.jpg", alt: "Северный объект" },
-];
-
 export const portfolio = {
   title: "Портфолио",
   subtitle: "Реализованные проекты по доставке грузов в районы Крайнего Севера",

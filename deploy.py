@@ -1,5 +1,4 @@
 import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -10,13 +9,16 @@ import paramiko
 REMOTE_HOST = os.getenv("RSP96_HOST", "").strip()
 REMOTE_USER = os.getenv("RSP96_USER", "root").strip()
 REMOTE_PASSWORD = os.getenv("RSP96_PASSWORD", "").strip()
-REMOTE_BASE = os.getenv("RSP96_REMOTE_BASE", "/var/www/rsp96").strip()
+REMOTE_BASE = os.getenv("RSP96_REMOTE_BASE", "/opt/rsp96").strip()
+REMOTE_CADDYFILE_PATH = os.getenv(
+    "RSP96_CADDYFILE_PATH", "/opt/safescan/Caddyfile"
+).strip()
 REMOTE_RELOAD_CMD = os.getenv(
     "RSP96_RELOAD_CMD",
     "docker exec safescan-caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile",
 ).strip()
-
-DIST_DIR = Path("dist")
+IMAGE_NAME = os.getenv("RSP96_IMAGE_NAME", "rsp96:latest").strip()
+CONTAINER_NAME = os.getenv("RSP96_CONTAINER_NAME", "rsp96").strip()
 
 
 def run(cmd: list[str] | str, check: bool = True, cwd: Path | None = None) -> subprocess.CompletedProcess:
@@ -26,19 +28,23 @@ def run(cmd: list[str] | str, check: bool = True, cwd: Path | None = None) -> su
     else:
         cmd_str = cmd
     print(f">>> {cmd_str}")
-    # На Windows shell=True нужен для нахождения npm/git/cmd-скриптов
     return subprocess.run(cmd_str, shell=True, check=check, cwd=cwd)
 
 
-def build() -> None:
-    """Собирает статический сайт."""
-    print("\n=== BUILD ===")
-    if DIST_DIR.exists():
-        shutil.rmtree(DIST_DIR)
-    run(["npm", "run", "build"])
-    if not DIST_DIR.exists():
-        print("ERROR: dist/ not found after build")
-        sys.exit(1)
+def build_image() -> None:
+    """Собирает Docker-образ приложения."""
+    print("\n=== DOCKER BUILD ===")
+    run(["docker", "build", "-t", IMAGE_NAME, "."])
+
+
+def save_image() -> Path:
+    """Сохраняет Docker-образ в tar-архив."""
+    print("\n=== DOCKER SAVE ===")
+    tar_path = Path(f"{CONTAINER_NAME}.tar")
+    if tar_path.exists():
+        tar_path.unlink()
+    run(["docker", "save", "-o", str(tar_path), IMAGE_NAME])
+    return tar_path
 
 
 def git_push() -> None:
@@ -46,13 +52,11 @@ def git_push() -> None:
     print("\n=== GIT PUSH ===")
     run(["git", "add", "."])
 
-    # Проверяем, есть ли уже коммиты
     has_commits = subprocess.run(
         "git rev-parse HEAD", shell=True, capture_output=True
     ).returncode == 0
 
     if not has_commits:
-        print("No commits yet, creating initial commit...")
         run(['git', 'commit', '-m', '"Initial commit"'])
     else:
         try:
@@ -63,8 +67,23 @@ def git_push() -> None:
     run(["git", "push", "origin", "main"])
 
 
+def ensure_remote_dir(sftp_client, remote_dir: str) -> None:
+    """Рекурсивно создаёт удалённые директории (mkdir -p через SFTP)."""
+    dirs = []
+    current = remote_dir
+    while current and current != "/":
+        try:
+            sftp_client.stat(current)
+            break
+        except IOError:
+            dirs.append(current)
+            current = os.path.dirname(current)
+    for d in reversed(dirs):
+        sftp_client.mkdir(d)
+
+
 def deploy_ssh() -> None:
-    """Загружает dist/ на сервер по SSH/SFTP и перезапускает веб-сервер."""
+    """Деплоит Docker-образ и конфигурацию на сервер."""
     print("\n=== SSH DEPLOY ===")
     if not REMOTE_HOST or not REMOTE_PASSWORD:
         print(
@@ -73,104 +92,82 @@ def deploy_ssh() -> None:
             "  export RSP96_HOST=your.server.ip\n"
             "  export RSP96_USER=root\n"
             "  export RSP96_PASSWORD=your_password\n"
-            "  export RSP96_REMOTE_BASE=/var/www/rsp96  # optional\n"
-            "  export RSP96_RELOAD_CMD='docker exec safescan-caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile'  # optional\n"
+            "  export RSP96_REMOTE_BASE=/opt/rsp96  # optional\n"
+            "  export RSP96_CADDYFILE_PATH=/opt/safescan/caddy/Caddyfile  # optional\n"
         )
         sys.exit(1)
+
+    image_tar = save_image()
 
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(REMOTE_HOST, username=REMOTE_USER, password=REMOTE_PASSWORD)
 
-    # Создаём/очищаем удалённую директорию
-    stdin, stdout, stderr = client.exec_command(f"mkdir -p {REMOTE_BASE} && rm -rf {REMOTE_BASE}/*")
-    stdout.channel.recv_exit_status()
-
-    def ensure_remote_dir(sftp_client, remote_dir: str) -> None:
-        """Рекурсивно создаёт удалённые директории (mkdir -p через SFTP)."""
-        dirs = []
-        current = remote_dir
-        while current and current != "/":
-            try:
-                sftp_client.stat(current)
-                break
-            except IOError:
-                dirs.append(current)
-                current = os.path.dirname(current)
-        for d in reversed(dirs):
-            sftp_client.mkdir(d)
-
     sftp = client.open_sftp()
     try:
-        # Создаём базовую директорию и очищаем старое содержимое
-        try:
-            sftp.mkdir(REMOTE_BASE)
-        except IOError:
-            pass
-        for item in sftp.listdir(REMOTE_BASE):
-            item_path = f"{REMOTE_BASE}/{item}"
-            try:
-                sftp.remove(item_path)
-            except IOError:
-                import paramiko.sftp_client as sftpc
-                sftp.rmdir(item_path)
+        # Создаём базовую директорию на сервере
+        ensure_remote_dir(sftp, REMOTE_BASE)
 
-        uploaded = 0
-        for local_path in DIST_DIR.rglob("*"):
-            if local_path.is_file():
-                relative = local_path.relative_to(DIST_DIR).as_posix()
-                remote_path = f"{REMOTE_BASE}/{relative}"
-                remote_dir = os.path.dirname(remote_path)
-                ensure_remote_dir(sftp, remote_dir)
-                sftp.put(str(local_path), remote_path)
-                uploaded += 1
-        print(f"Uploaded {uploaded} file(s) to {REMOTE_HOST}:{REMOTE_BASE}")
+        # Загружаем docker-compose.yml
+        sftp.put("docker-compose.yml", f"{REMOTE_BASE}/docker-compose.yml")
+
+        # Загружаем образ
+        remote_tar_path = f"{REMOTE_BASE}/{image_tar.name}"
+        print(f"Uploading {image_tar} to {remote_tar_path} ...")
+        sftp.put(str(image_tar), remote_tar_path)
+
+        # Загружаем Caddyfile
+        print(f"Uploading Caddyfile to {REMOTE_CADDYFILE_PATH} ...")
+        ensure_remote_dir(sftp, os.path.dirname(REMOTE_CADDYFILE_PATH))
+        sftp.put("Caddyfile", REMOTE_CADDYFILE_PATH)
     finally:
         sftp.close()
 
-    # Перезапуск веб-сервера
-    print(f"\n>>> {REMOTE_RELOAD_CMD}")
-    stdin, stdout, stderr = client.exec_command(REMOTE_RELOAD_CMD)
-    out = stdout.read().decode("utf-8", errors="replace")
-    err = stderr.read().decode("utf-8", errors="replace")
-    exit_code = stdout.channel.recv_exit_status()
+    # Выполняем команды на сервере
+    commands = [
+        f"cd {REMOTE_BASE} && docker load -i {image_tar.name}",
+        f"cd {REMOTE_BASE} && docker compose up -d --force-recreate",
+        REMOTE_RELOAD_CMD,
+    ]
+
+    full_output = []
+    exit_code = 0
+    for cmd in commands:
+        print(f"\n>>> {cmd}")
+        stdin, stdout, stderr = client.exec_command(cmd)
+        out = stdout.read().decode("utf-8", errors="replace")
+        err = stderr.read().decode("utf-8", errors="replace")
+        code = stdout.channel.recv_exit_status()
+        full_output.append(f"=== CMD ===\n{cmd}\n=== EXIT ===\n{code}\n=== STDOUT ===\n{out}\n=== STDERR ===\n{err}")
+        if code != 0:
+            exit_code = code
+            print(out[-2000:])
+            print(err[-2000:])
+            break
+
     client.close()
 
+    # Удаляем локальный tar
+    image_tar.unlink(missing_ok=True)
+
     with open("deploy_output.txt", "w", encoding="utf-8") as f:
-        f.write(f"=== EXIT CODE ===\n{exit_code}\n")
-        f.write("=== STDOUT ===\n" + out + "\n=== STDERR ===\n" + err)
+        f.write("\n\n".join(full_output))
 
     if exit_code != 0:
-        print(f"Reload command failed with exit code {exit_code}")
-        print(out[-2000:])
-        print(err[-2000:])
+        print(f"Deploy failed with exit code {exit_code}")
         sys.exit(exit_code)
 
-
-def deploy_github_pages() -> None:
-    """Альтернатива: деплоит dist/ в ветку gh-pages."""
-    print("\n=== GITHUB PAGES DEPLOY ===")
-    run(["git", "checkout", "--orphan", "gh-pages"])
-    run(["git", "rm", "-rf", "."])
-    for item in DIST_DIR.iterdir():
-        shutil.move(str(item), ".")
-    run(["git", "add", "."])
-    run(["git", "commit", "-m", "deploy: gh-pages"])
-    run(["git", "push", "origin", "gh-pages", "--force"])
-    run(["git", "checkout", "main"])
+    print(f"\nDeployed successfully to {REMOTE_HOST}")
 
 
 def main() -> None:
-    build()
+    build_image()
     git_push()
 
-    # По умолчанию пробуем SSH, если заданы креды
     if REMOTE_HOST and REMOTE_PASSWORD:
         deploy_ssh()
     else:
         print("\nSSH credentials not set, skipping server deploy.")
-        print("To deploy to your server set RSP96_HOST and RSP96_PASSWORD.")
-        print("Or run deploy_github_pages() manually for GitHub Pages.")
 
 
 if __name__ == "__main__":

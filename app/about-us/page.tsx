@@ -6,6 +6,7 @@ import { AdvantagesSection } from "@/components/sections/advantages-section";
 import { GeographySection } from "@/components/sections/geography-section";
 import { GallerySection } from "@/components/sections/gallery-section";
 import { aboutContent, stats } from "@/lib/data";
+import { getGallery } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "О компании",
@@ -13,7 +14,9 @@ export const metadata: Metadata = {
     "ООО «РемСтройПроект» — профессиональный логистический оператор на Крайнем Севере. Грузоперевозки, поставки, перевозка людей.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const gallery = await getGallery();
+
   return (
     <>
       <section className="py-16 md:py-24 bg-muted/30">
@@ -100,7 +103,7 @@ export default function AboutPage() {
 
       <AdvantagesSection />
       <GeographySection />
-      <GallerySection />
+      <GallerySection gallery={gallery} />
     </>
   );
 }

@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { VacancyDeleteButton } from "@/components/admin/vacancy-delete-button";
 import { getVacancies } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminVacanciesPage() {
   const vacancies = await getVacancies();
 

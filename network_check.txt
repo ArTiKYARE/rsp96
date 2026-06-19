@@ -1,0 +1,10 @@
+NETWORK ID     NAME                    DRIVER    SCOPE
+b5acb6da932a   bridge                  bridge    local
+f6867b0b4b2f   host                    host      local
+4269c225ad45   none                    null      local
+cce824cf230a   rsp96_default           bridge    local
+af8db5697fff   safescan_safescan_net   bridge    local
+---
+{"safescan_safescan_net":{"IPAMConfig":null,"Links":null,"Aliases":null,"DriverOpts":null,"GwPriority":0,"NetworkID":"af8db5697fff5755b0330ef000985ab0495be92f25bc882b0a49a8e4d841bb3f","EndpointID":"0bc0d8b0a3d68ba95335e29ccf50893cde86c45081b8af31a8e4a27e40997842","Gateway":"172.18.0.1","IPAddress":"172.18.0.7","MacAddress":"6e:b9:b6:c0:b7:52","IPPrefixLen":16,"IPv6Gateway":"","GlobalIPv6Address":"","GlobalIPv6PrefixLen":0,"DNSNames":["safescan-caddy","bb0889c5c9ed"]}}
+---
+{"rsp96_default":{"IPAMConfig":null,"Links":null,"Aliases":["rsp96","rsp96"],"DriverOpts":null,"GwPriority":0,"NetworkID":"cce824cf230a5b8ba78042acfb7e8ce23a61968b988987367f4d1855d5c4a273","EndpointID":"8180b1cdbcf903b4e3e170096c9ba253477c4a54596905b606a486db1ca4dddd","Gateway":"172.19.0.1","IPAddress":"172.19.0.2","MacAddress":"26:a9:ef:05:8c:3a","IPPrefixLen":16,"IPv6Gateway":"","GlobalIPv6Address":"","GlobalIPv6PrefixLen":0,"DNSNames":["rsp96","fa56d7819f68"]}}

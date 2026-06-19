@@ -1,0 +1,10 @@
+
+safescan-redis 172.18.0.3/16
+safescan-celery-beat 172.18.0.5/16
+safescan-celery-worker 172.18.0.8/16
+safescan-backend 172.18.0.6/16
+safescan-frontend 172.18.0.9/16
+safescan-caddy 172.18.0.7/16
+safescan-minio 172.18.0.4/16
+safescan-postgres 172.18.0.2/16
+

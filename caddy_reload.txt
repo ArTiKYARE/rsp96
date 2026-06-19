@@ -1,0 +1,6 @@
+OUT:
+{"level":"info","ts":1781860809.8542433,"msg":"using config from file","file":"/etc/caddy/Caddyfile"}
+{"level":"info","ts":1781860809.8594446,"msg":"adapted config to JSON","adapter":"caddyfile"}
+{"level":"warn","ts":1781860809.8594713,"msg":"Caddyfile input is not formatted; run 'caddy fmt --overwrite' to fix inconsistencies","adapter":"caddyfile","file":"/etc/caddy/Caddyfile","line":2}
+
+ERR:

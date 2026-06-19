@@ -1,0 +1,1 @@
+["caddy_data:/data","caddy_config:/config","/opt/safescan/Caddyfile:/etc/caddy/Caddyfile:ro","/var/www/rsp96:/srv/rsp96:ro"]

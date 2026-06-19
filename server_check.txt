@@ -1,0 +1,18 @@
+OUT:
+CONTAINER ID   IMAGE                      COMMAND                  CREATED              STATUS                  PORTS                                                                                                                             NAMES
+fa56d7819f68   rsp96:latest               "/app/docker-entrypo…"   About a minute ago   Up About a minute       127.0.0.1:3000->3000/tcp                                                                                                          rsp96
+bb0889c5c9ed   caddy:2.8-alpine           "caddy run --config …"   13 hours ago         Up 13 hours             0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp, 0.0.0.0:443->443/udp, [::]:443->443/udp, 2019/tcp   safescan-caddy
+b2c02536179e   safescan-frontend:latest   "docker-entrypoint.s…"   13 hours ago         Up 13 hours (healthy)   3000/tcp                                                                                                                          safescan-frontend
+b00fe7f90920   safescan-backend           "uvicorn app.main:ap…"   13 hours ago         Up 13 hours (healthy)   8000/tcp                                                                                                                          safescan-backend
+3e1e13663e63   safescan-celery-beat       "celery -A app.worke…"   10 days ago          Up 9 days (healthy)     8000/tcp                                                                                                                          safescan-celery-beat
+9bceacf323a9   safescan-celery-worker     "celery -A app.worke…"   12 days ago          Up 9 days (healthy)     8000/tcp                                                                                                                          safescan-celery-worker
+dec85e1496e4   postgres:16-alpine         "docker-entrypoint.s…"   12 days ago          Up 12 days (healthy)    0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                                                                                       safescan-postgres
+101f598c342e   redis:7-alpine             "docker-entrypoint.s…"   12 days ago          Up 12 days (healthy)    6379/tcp                                                                                                                          safescan-redis
+c4730709ec46   minio/minio:latest         "/usr/bin/docker-ent…"   12 days ago          Up 12 days (healthy)    0.0.0.0:9000-9001->9000-9001/tcp, [::]:9000-9001->9000-9001/tcp                                                                   safescan-minio
+---
+▲ Next.js 16.2.9
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+✓ Ready in 0ms
+
+ERR:

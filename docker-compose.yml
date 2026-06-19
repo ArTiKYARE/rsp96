@@ -8,6 +8,9 @@ services:
     volumes:
       - rsp96-data:/app/data
       - rsp96-uploads:/app/public/images/uploads
+    networks:
+      - rsp96_default
+      - safescan_net
     environment:
       - NODE_ENV=production
       # Переопределите хеш пароля админа при необходимости
@@ -16,3 +19,9 @@ services:
 volumes:
   rsp96-data:
   rsp96-uploads:
+
+networks:
+  rsp96_default:
+  safescan_net:
+    external: true
+    name: safescan_safescan_net

@@ -1,10 +1,11 @@
 import { promises as fs } from "fs";
 import path from "path";
-import type { AdminConfig, GalleryItem, Service } from "./models";
+import type { AdminConfig, GalleryItem, Service, Vacancy } from "./models";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const SERVICES_FILE = path.join(DATA_DIR, "services.json");
 const GALLERY_FILE = path.join(DATA_DIR, "gallery.json");
+const VACANCIES_FILE = path.join(DATA_DIR, "vacancies.json");
 const ADMIN_FILE = path.join(DATA_DIR, "admin.json");
 
 async function ensureDataDir() {
@@ -56,6 +57,20 @@ export async function getGallery(): Promise<GalleryItem[]> {
 
 export async function saveGallery(gallery: GalleryItem[]): Promise<void> {
   return writeJsonFile(GALLERY_FILE, gallery);
+}
+
+// Vacancies
+export async function getVacancies(): Promise<Vacancy[]> {
+  return readJsonFile<Vacancy[]>(VACANCIES_FILE, []);
+}
+
+export async function getVacancyById(id: string): Promise<Vacancy | null> {
+  const vacancies = await getVacancies();
+  return vacancies.find((v) => v.id === id) ?? null;
+}
+
+export async function saveVacancies(vacancies: Vacancy[]): Promise<void> {
+  return writeJsonFile(VACANCIES_FILE, vacancies);
 }
 
 // Admin

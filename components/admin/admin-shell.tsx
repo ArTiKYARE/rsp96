@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Briefcase, Images, LogOut, PanelLeft } from "lucide-react";
+import { Briefcase, Images, LogOut, PanelLeft, Users } from "lucide-react";
 
 const nav = [
   { href: "/admin/services/", label: "Услуги", icon: Briefcase },
+  { href: "/admin/vacancies/", label: "Вакансии", icon: Users },
   { href: "/admin/gallery/", label: "Галерея", icon: Images },
 ];
 

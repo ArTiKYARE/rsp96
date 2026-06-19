@@ -58,6 +58,19 @@ function checkLoginRateLimit(ip: string): { allowed: boolean; retryAfter?: numbe
   return { allowed: true };
 }
 
+const LOGIN_PATHS = new Set([
+  "/login",
+  "/login/",
+  "/admin/login",
+  "/admin/login/",
+  "/api/auth/login",
+  "/api/auth/login/",
+]);
+
+function isLoginPath(pathname: string): boolean {
+  return LOGIN_PATHS.has(pathname);
+}
+
 // Patterns commonly used in reflected XSS / command-injection probes.
 // These are checked against raw query parameter values before Next.js renders them.
 const SUSPICIOUS_QUERY_PATTERNS = [
@@ -94,9 +107,9 @@ export async function middleware(request: NextRequest) {
     return new NextResponse("Bad Request", { status: 400 });
   }
 
-  // Rate-limit login endpoint to mitigate brute-force and credential-stuffing.
-  if (pathname === "/api/auth/login" || pathname === "/api/auth/login/") {
-    if (request.method !== "POST") {
+  // Rate-limit all login endpoints to mitigate brute-force and credential-stuffing.
+  if (isLoginPath(pathname)) {
+    if (pathname.startsWith("/api/") && request.method !== "POST") {
       return new NextResponse("Method Not Allowed", { status: 405 });
     }
     const ip = getClientIp(request);
@@ -133,16 +146,9 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  const response = NextResponse.next();
-
-  // Hardening headers for routes not already covered by the reverse proxy.
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("X-Frame-Options", "SAMEORIGIN");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/api/auth/login", "/:path*"],
+  matcher: ["/admin", "/admin/:path*", "/api/auth/login", "/login", "/:path*"],
 };

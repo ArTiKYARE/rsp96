@@ -52,3 +52,9 @@ data/site_content_summary.txt
 # deploy artifacts
 rsp96.tar
 contacts-updated.png
+
+# screenshots / test files
+gallery-*.png
+admin-gallery-*.png
+homepage-gallery-*.png
+test-upload.png

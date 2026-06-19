@@ -10,6 +10,8 @@ import { GallerySection } from "@/components/sections/gallery-section";
 import { getGallery } from "@/lib/db";
 import { siteConfig } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Главная",
   description: siteConfig.description,

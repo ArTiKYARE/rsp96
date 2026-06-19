@@ -8,6 +8,8 @@ import { GallerySection } from "@/components/sections/gallery-section";
 import { aboutContent, stats } from "@/lib/data";
 import { getGallery } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "О компании",
   description:

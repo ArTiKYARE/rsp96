@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { VacancyForm } from "@/components/admin/vacancy-form";
 import { getVacancyById } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ id: string }>;
 }

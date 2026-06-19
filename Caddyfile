@@ -105,7 +105,7 @@ remstroyproect.ru, www.remstroyproect.ru {
 	header -Server
 	header -X-Powered-By
 
-	# Security headers (CSP is set per-request by Next.js middleware with a nonce)
+	# Security headers (CSP is set per-request by the Next.js proxy)
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 		X-Content-Type-Options "nosniff"

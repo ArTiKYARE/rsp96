@@ -1,8 +1,6 @@
 services:
   rsp96:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: rsp96:latest
     container_name: rsp96
     restart: unless-stopped
     ports:

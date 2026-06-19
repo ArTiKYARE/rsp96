@@ -108,8 +108,11 @@ def deploy_ssh() -> None:
         # Создаём базовую директорию на сервере
         ensure_remote_dir(sftp, REMOTE_BASE)
 
-        # Загружаем docker-compose.yml
+        # Загружаем docker-compose.yml и .env
         sftp.put("docker-compose.yml", f"{REMOTE_BASE}/docker-compose.yml")
+        if os.path.exists(".env"):
+            print(f"Uploading .env to {REMOTE_BASE}/.env ...")
+            sftp.put(".env", f"{REMOTE_BASE}/.env")
 
         # Загружаем образ
         remote_tar_path = f"{REMOTE_BASE}/{image_tar.name}"

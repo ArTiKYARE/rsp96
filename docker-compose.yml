@@ -11,6 +11,8 @@ services:
     networks:
       - rsp96_default
       - safescan_net
+    env_file:
+      - .env
     environment:
       - NODE_ENV=production
       # Переопределите хеш пароля админа при необходимости

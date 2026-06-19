@@ -192,7 +192,12 @@ export function SafeScanGetManager() {
         body: JSON.stringify({ domainId }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to start scan");
+      if (!res.ok) {
+        if (res.status === 402) {
+          throw new Error("Недостаточно средств на балансе SafeScanGet для запуска скана.");
+        }
+        throw new Error(data.error || "Failed to start scan");
+      }
       updateScanInList(data);
       await pollScanStatus(data.id);
     } catch (err) {

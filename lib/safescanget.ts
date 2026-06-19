@@ -28,7 +28,9 @@ async function fetchJson<T>(path: string, options?: RequestInit): Promise<T> {
 
   if (!res.ok) {
     const text = await res.text().catch(() => "Unknown error");
-    throw new Error(`SafeScanGet API error ${res.status}: ${text}`);
+    const err = new Error(`SafeScanGet API error ${res.status}: ${text}`);
+    (err as Error & { statusCode?: number }).statusCode = res.status;
+    throw err;
   }
 
   return res.json() as Promise<T>;

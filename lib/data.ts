@@ -9,7 +9,7 @@ export const siteConfig = {
   email: "rsp@rsp96.ru",
   emailHref: "mailto:rsp@rsp96.ru",
   address: "620102, г. Екатеринбург, ул. Радищева, д. 55, офис 6",
-  yandexMetrikaId: "107729716",
+  yandexMetrikaId: "109991388",
   ogImage: "/images/banner.jpg",
 };
 

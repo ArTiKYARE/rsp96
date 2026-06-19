@@ -134,6 +134,19 @@
 }
 
 @layer utilities {
+  @keyframes gallery-scroll-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .gallery-track {
+    animation-name: gallery-scroll-left;
+  }
+
   .text-balance {
     text-wrap: balance;
   }

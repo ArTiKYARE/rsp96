@@ -6,6 +6,14 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
+  async rewrites() {
+    return [
+      {
+        source: "/images/uploads/:path*",
+        destination: "/api/uploads/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

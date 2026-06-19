@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const ext = path.extname(file.name) || ".jpg";
     const baseName = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
     const fileName = `${baseName}${ext}`;
-    const uploadDir = path.join(process.cwd(), "public", "images", "uploads");
+    const uploadDir = path.join(/*turbopackIgnore: true*/ process.cwd(), "data", "uploads");
     const filePath = path.join(uploadDir, fileName);
 
     await writeFile(filePath, buffer);

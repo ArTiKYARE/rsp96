@@ -34,7 +34,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Create directories for persistent data and uploads
-RUN mkdir -p /app/data /app/data/.default /app/public/images/uploads \
+RUN mkdir -p /app/data /app/data/.default /app/data/uploads /app/public/images/uploads \
     && chown -R nextjs:nodejs /app/data /app/public/images/uploads
 
 # Automatically leverage output traces to reduce image size

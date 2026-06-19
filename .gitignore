@@ -48,3 +48,7 @@ __pycache__/
 deploy_output.txt
 data/about.html
 data/site_content_summary.txt
+
+# deploy artifacts
+rsp96.tar
+contacts-updated.png

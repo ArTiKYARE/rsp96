@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ServiceForm } from "@/components/admin/service-form";
 import { getServiceById } from "@/lib/db";
+import { requirePermission } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,12 @@ interface Props {
 }
 
 export default async function EditServicePage({ params }: Props) {
+  try {
+    await requirePermission("services");
+  } catch {
+    redirect("/admin/");
+  }
+
   const { id } = await params;
   const service = await getServiceById(id);
 

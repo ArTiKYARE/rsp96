@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Loader2 } from "lucide-react";
+import { Lock, Loader2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,14 +23,15 @@ export default function AdminLoginPage() {
       const res = await fetch("/api/auth/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (res.ok) {
         router.push("/admin/services/");
         router.refresh();
       } else {
-        setError("Неверный пароль");
+        const data = await res.json();
+        setError(data.error || "Неверные учётные данные");
       }
     } catch {
       setError("Ошибка соединения");
@@ -50,6 +52,18 @@ export default function AdminLoginPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="username">Логин</Label>
+            <Input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              placeholder="Введите логин"
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="password">Пароль</Label>
             <Input

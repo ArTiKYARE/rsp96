@@ -1,6 +1,16 @@
+import { redirect } from "next/navigation";
 import { VacancyForm } from "@/components/admin/vacancy-form";
+import { requirePermission } from "@/lib/auth";
 
-export default function NewVacancyPage() {
+export const dynamic = "force-dynamic";
+
+export default async function NewVacancyPage() {
+  try {
+    await requirePermission("vacancies");
+  } catch {
+    redirect("/admin/");
+  }
+
   return (
     <div className="space-y-6">
       <div>

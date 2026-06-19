@@ -1,3 +1,25 @@
+export type AdminRole = "superadmin" | "admin" | "manager";
+
+export type AdminPermission =
+  | "services"
+  | "vacancies"
+  | "gallery"
+  | "safescanget"
+  | "users";
+
+export interface AdminUser {
+  id: string;
+  username: string;
+  passwordHash: string;
+  role: AdminRole;
+  permissions: AdminPermission[];
+  createdAt: string;
+}
+
+export interface AdminConfig {
+  users: AdminUser[];
+}
+
 export interface Service {
   id: string;
   slug: string;
@@ -12,10 +34,6 @@ export interface GalleryItem {
   id: string;
   src: string;
   alt: string;
-}
-
-export interface AdminConfig {
-  passwordHash: string;
 }
 
 export interface ServiceInput {

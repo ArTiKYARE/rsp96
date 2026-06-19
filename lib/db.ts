@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
-import type { AdminConfig, GalleryItem, Service, Vacancy } from "./models";
+import { createHash } from "crypto";
+import type { AdminConfig, AdminUser, GalleryItem, Service, Vacancy } from "./models";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const SERVICES_FILE = path.join(DATA_DIR, "services.json");
@@ -75,9 +76,52 @@ export async function saveVacancies(vacancies: Vacancy[]): Promise<void> {
 
 // Admin
 export async function getAdminConfig(): Promise<AdminConfig | null> {
-  return readJsonFile<AdminConfig | null>(ADMIN_FILE, null);
+  const data = await readJsonFile<AdminConfig | Record<string, unknown> | null>(ADMIN_FILE, null);
+
+  // Migrate legacy format { passwordHash: "..." } to new format
+  if (data && "passwordHash" in data && typeof data.passwordHash === "string") {
+    const migrated: AdminConfig = {
+      users: [
+        {
+          id: crypto.randomUUID(),
+          username: "admin",
+          passwordHash: data.passwordHash,
+          role: "superadmin",
+          permissions: ["services", "vacancies", "gallery", "safescanget", "users"],
+          createdAt: new Date().toISOString(),
+        },
+      ],
+    };
+    await saveAdminConfig(migrated);
+    return migrated;
+  }
+
+  return data as AdminConfig | null;
 }
 
 export async function saveAdminConfig(config: AdminConfig): Promise<void> {
   return writeJsonFile(ADMIN_FILE, config);
+}
+
+export async function getAdminUsers(): Promise<AdminUser[]> {
+  const config = await getAdminConfig();
+  return config?.users ?? [];
+}
+
+export async function saveAdminUsers(users: AdminUser[]): Promise<void> {
+  const config = await getAdminConfig();
+  await saveAdminConfig({ users });
+}
+
+export async function createDefaultSuperAdmin(password = "admin123"): Promise<AdminUser> {
+  const user: AdminUser = {
+    id: crypto.randomUUID(),
+    username: "admin",
+    passwordHash: createHash("sha256").update(password).digest("hex"),
+    role: "superadmin",
+    permissions: ["services", "vacancies", "gallery", "safescanget", "users"],
+    createdAt: new Date().toISOString(),
+  };
+  await saveAdminConfig({ users: [user] });
+  return user;
 }

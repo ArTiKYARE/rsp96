@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,10 +12,17 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { VacancyDeleteButton } from "@/components/admin/vacancy-delete-button";
 import { getVacancies } from "@/lib/db";
+import { requirePermission } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminVacanciesPage() {
+  try {
+    await requirePermission("vacancies");
+  } catch {
+    redirect("/admin/");
+  }
+
   const vacancies = await getVacancies();
 
   return (

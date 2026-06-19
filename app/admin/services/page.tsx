@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Plus, Pencil, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,10 +11,17 @@ import {
 } from "@/components/ui/card";
 import { ServiceDeleteButton } from "@/components/admin/service-delete-button";
 import { getServices } from "@/lib/db";
+import { requirePermission } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminServicesPage() {
+  try {
+    await requirePermission("services");
+  } catch {
+    redirect("/admin/");
+  }
+
   const services = await getServices();
 
   return (

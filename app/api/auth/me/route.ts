@@ -6,5 +6,11 @@ export async function GET() {
   if (!session) {
     return NextResponse.json({ authenticated: false }, { status: 401 });
   }
-  return NextResponse.json({ authenticated: true, role: session.role });
+  return NextResponse.json({
+    authenticated: true,
+    userId: session.userId,
+    username: session.username,
+    role: session.role,
+    permissions: session.permissions,
+  });
 }

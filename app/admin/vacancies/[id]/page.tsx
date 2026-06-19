@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { VacancyForm } from "@/components/admin/vacancy-form";
 import { getVacancyById } from "@/lib/db";
+import { requirePermission } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,12 @@ interface Props {
 }
 
 export default async function EditVacancyPage({ params }: Props) {
+  try {
+    await requirePermission("vacancies");
+  } catch {
+    redirect("/admin/");
+  }
+
   const { id } = await params;
   const vacancy = await getVacancyById(id);
 

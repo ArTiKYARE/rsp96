@@ -1,7 +1,15 @@
+import { redirect } from "next/navigation";
+import { SafeScanGetManager } from "@/components/admin/safescanget-manager";
+import { requirePermission } from "@/lib/auth";
+
 export const dynamic = "force-dynamic";
 
-import { SafeScanGetManager } from "@/components/admin/safescanget-manager";
+export default async function AdminSafeScanGetPage() {
+  try {
+    await requirePermission("safescanget");
+  } catch {
+    redirect("/admin/");
+  }
 
-export default function AdminSafeScanGetPage() {
   return <SafeScanGetManager />;
 }

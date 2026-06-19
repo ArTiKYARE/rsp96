@@ -1,6 +1,16 @@
+import { redirect } from "next/navigation";
 import { ServiceForm } from "@/components/admin/service-form";
+import { requirePermission } from "@/lib/auth";
 
-export default function NewServicePage() {
+export const dynamic = "force-dynamic";
+
+export default async function NewServicePage() {
+  try {
+    await requirePermission("services");
+  } catch {
+    redirect("/admin/");
+  }
+
   return (
     <div className="space-y-6">
       <div>

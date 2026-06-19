@@ -11,11 +11,16 @@ const nav = [
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isLogin = pathname === "/admin/login/" || pathname === "/admin/login";
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout/", { method: "POST" });
     window.location.href = "/admin/login/";
   };
+
+  if (isLogin) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-muted/30 flex">

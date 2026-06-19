@@ -3,8 +3,8 @@ import { Manrope } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { ConditionalHeader } from "@/components/layout/conditional-header";
+import { ConditionalFooter } from "@/components/layout/conditional-footer";
 import { CookieBanner } from "@/components/layout/cookie-banner";
 import { YandexMetrika } from "@/components/layout/yandex-metrika";
 import { siteConfig } from "@/lib/data";
@@ -48,9 +48,9 @@ export default function RootLayout({
     <html lang="ru" suppressHydrationWarning>
       <body className={`${manrope.variable} font-sans min-h-screen flex flex-col`}>
         <ThemeProvider>
-          <Header />
+          <ConditionalHeader />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <ConditionalFooter />
           <CookieBanner />
         </ThemeProvider>
         <YandexMetrika />

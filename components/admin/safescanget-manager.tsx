@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Shield,
   ShieldAlert,
@@ -11,7 +11,6 @@ import {
   ExternalLink,
   Search,
   AlertTriangle,
-  Skull,
   Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import type { SafeScanGetDomain, SafeScanGetScan, SafeScanGetVulnerability } from "@/lib/safescanget";
 
 const severityOrder: Record<string, number> = {
@@ -43,17 +43,25 @@ const severityBadge: Record<string, string> = {
   info: "bg-slate-500 text-white hover:bg-slate-600",
 };
 
+const POLL_INTERVAL_MS = 3000;
+const POLL_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
+
 export function SafeScanGetManager() {
   const [domains, setDomains] = useState<SafeScanGetDomain[]>([]);
   const [scans, setScans] = useState<SafeScanGetScan[]>([]);
   const [selectedScan, setSelectedScan] = useState<SafeScanGetScan | null>(null);
   const [vulnerabilities, setVulnerabilities] = useState<SafeScanGetVulnerability[]>([]);
   const [loading, setLoading] = useState(true);
-  const [scanning, setScanning] = useState(false);
+  const [scanningDomainId, setScanningDomainId] = useState<string | null>(null);
+  const [pollingScanId, setPollingScanId] = useState<string | null>(null);
+  const [pollingProgress, setPollingProgress] = useState(0);
+  const [pollingStatus, setPollingStatus] = useState<string>("");
   const [newDomain, setNewDomain] = useState("");
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
   const [reportLoading, setReportLoading] = useState(false);
+  const pollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const pollStartRef = useRef<number>(0);
 
   const fetchData = async () => {
     setError("");
@@ -77,16 +85,39 @@ export function SafeScanGetManager() {
 
   useEffect(() => {
     fetchData();
+    return () => {
+      if (pollTimeoutRef.current) {
+        clearTimeout(pollTimeoutRef.current);
+      }
+    };
   }, []);
 
-  const loadReport = async (scan: SafeScanGetScan) => {
+  const updateScanInList = (scan: SafeScanGetScan) => {
+    setScans((prev) => {
+      const exists = prev.some((s) => s.id === scan.id);
+      if (exists) {
+        return prev.map((s) => (s.id === scan.id ? scan : s)).sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      }
+      return [scan, ...prev];
+    });
+    setSelectedScan((prev) => (prev?.id === scan.id ? scan : prev));
+  };
+
+  const loadReport = async (scan: SafeScanGetScan, silent = false) => {
     setSelectedScan(scan);
-    setReportLoading(true);
+    if (!silent) setReportLoading(true);
     setError("");
     try {
       const res = await fetch(`/api/safescanget/reports/${scan.id}/`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to load report");
+      if (!res.ok) {
+        if (res.status === 400 && typeof data.error === "string" && data.error.toLowerCase().includes("running")) {
+          throw new Error("Отчёт ещё не готов: сканирование выполняется. Дождитесь завершения.");
+        }
+        throw new Error(data.error || "Failed to load report");
+      }
       const vulns = data.report?.vulnerabilities || [];
       vulns.sort(
         (a: SafeScanGetVulnerability, b: SafeScanGetVulnerability) =>
@@ -94,14 +125,65 @@ export function SafeScanGetManager() {
       );
       setVulnerabilities(vulns);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ошибка загрузки отчёта");
+      if (!silent) setError(err instanceof Error ? err.message : "Ошибка загрузки отчёта");
     } finally {
-      setReportLoading(false);
+      if (!silent) setReportLoading(false);
     }
   };
 
+  const pollScanStatus = async (scanId: string) => {
+    if (pollTimeoutRef.current) {
+      clearTimeout(pollTimeoutRef.current);
+    }
+    pollStartRef.current = Date.now();
+    setPollingScanId(scanId);
+    setPollingProgress(0);
+    setPollingStatus("Запуск сканирования...");
+
+    const tick = async () => {
+      try {
+        const res = await fetch(`/api/safescanget/scans/${scanId}/`);
+        const scan = await res.json();
+        if (!res.ok) throw new Error(scan.error || "Failed to get scan status");
+
+        updateScanInList(scan);
+        setPollingProgress(scan.progress_percentage ?? 0);
+        setPollingStatus(scan.current_module || scan.status);
+
+        if (scan.status === "completed") {
+          setPollingScanId(null);
+          setScanningDomainId(null);
+          await loadReport(scan);
+          return;
+        }
+
+        if (["failed", "cancelled", "error"].includes(scan.status)) {
+          setPollingScanId(null);
+          setScanningDomainId(null);
+          setError(`Сканирование завершилось со статусом: ${scan.status}`);
+          return;
+        }
+
+        if (Date.now() - pollStartRef.current > POLL_TIMEOUT_MS) {
+          setPollingScanId(null);
+          setScanningDomainId(null);
+          setError("Превышено время ожидания завершения сканирования.");
+          return;
+        }
+
+        pollTimeoutRef.current = setTimeout(tick, POLL_INTERVAL_MS);
+      } catch (err) {
+        setPollingScanId(null);
+        setScanningDomainId(null);
+        setError(err instanceof Error ? err.message : "Ошибка при проверке статуса скана");
+      }
+    };
+
+    await tick();
+  };
+
   const startScan = async (domainId: string) => {
-    setScanning(true);
+    setScanningDomainId(domainId);
     setError("");
     try {
       const res = await fetch("/api/safescanget/scans/", {
@@ -111,12 +193,11 @@ export function SafeScanGetManager() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to start scan");
-      setScans((prev) => [data, ...prev]);
-      await loadReport(data);
+      updateScanInList(data);
+      await pollScanStatus(data.id);
     } catch (err) {
+      setScanningDomainId(null);
       setError(err instanceof Error ? err.message : "Ошибка запуска скана");
-    } finally {
-      setScanning(false);
     }
   };
 
@@ -151,6 +232,17 @@ export function SafeScanGetManager() {
     return "text-red-600";
   };
 
+  const statusLabel = (status: string) => {
+    const map: Record<string, string> = {
+      pending: "В очереди",
+      running: "Выполняется",
+      completed: "Завершён",
+      failed: "Ошибка",
+      cancelled: "Отменён",
+    };
+    return map[status] || status;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -176,6 +268,22 @@ export function SafeScanGetManager() {
           <AlertTriangle className="h-5 w-5 shrink-0" />
           {error}
         </div>
+      )}
+
+      {pollingScanId && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              Сканирование выполняется
+            </CardTitle>
+            <CardDescription>{pollingStatus}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Progress value={pollingProgress} className="h-2" />
+            <p className="text-xs text-muted-foreground mt-2">{pollingProgress}%</p>
+          </CardContent>
+        </Card>
       )}
 
       <Card>
@@ -230,14 +338,18 @@ export function SafeScanGetManager() {
                     variant="outline"
                     size="sm"
                     onClick={() => startScan(domain.id)}
-                    disabled={scanning}
+                    disabled={scanningDomainId === domain.id || !!pollingScanId}
                   >
-                    {scanning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
+                    {scanningDomainId === domain.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Play className="h-4 w-4" />
+                    )}
                     Сканировать
                   </Button>
                 </div>
-              ))
-            )}
+              )))
+            }
           </CardContent>
         </Card>
 
@@ -260,18 +372,25 @@ export function SafeScanGetManager() {
                   key={scan.id}
                   type="button"
                   onClick={() => loadReport(scan)}
+                  disabled={scan.status !== "completed"}
                   className={`w-full text-left p-3 rounded-lg border transition-colors ${
                     selectedScan?.id === scan.id
                       ? "border-primary bg-primary/5"
                       : "border-border bg-muted/30 hover:bg-muted/50"
-                  }`}
+                  } ${scan.status !== "completed" ? "opacity-70 cursor-not-allowed" : ""}`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{scan.domain}</span>
                     <span className={`font-bold ${gradeColor(scan.grade)}`}>{scan.grade || "—"}</span>
                   </div>
                   <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                    <span>{scan.status === "completed" ? "Завершён" : scan.status}</span>
+                    <span>{statusLabel(scan.status)}</span>
+                    {scan.status === "running" && (
+                      <>
+                        <span>•</span>
+                        <span>{scan.progress_percentage ?? 0}%</span>
+                      </>
+                    )}
                     <span>•</span>
                     <span>findings: {scan.total_findings}</span>
                     <span>•</span>

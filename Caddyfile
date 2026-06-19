@@ -80,6 +80,24 @@ remstroyproect.ru, www.remstroyproect.ru {
 	@trace method TRACE
 	respond @trace 405
 
+	# Common scanner/probe paths for login. POST is forwarded to the rate-limited
+	# API endpoint; everything else gets an immediate 429 so probes see rate-limiting.
+	handle /login* {
+		@post method POST
+		handle @post {
+			rewrite * /api/auth/login/
+			reverse_proxy rsp96:3000
+		}
+		header Retry-After "900"
+		header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+		respond "Too Many Requests" 429
+	}
+
+	handle /api/v1/auth/login* {
+		rewrite * /api/auth/login/
+		reverse_proxy rsp96:3000
+	}
+
 	# Reverse proxy to Next.js Docker container
 	reverse_proxy rsp96:3000
 
@@ -87,14 +105,13 @@ remstroyproect.ru, www.remstroyproect.ru {
 	header -Server
 	header -X-Powered-By
 
-	# Security headers
+	# Security headers (CSP is set per-request by Next.js middleware with a nonce)
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 		X-Content-Type-Options "nosniff"
 		Referrer-Policy "strict-origin-when-cross-origin"
 		X-Frame-Options "SAMEORIGIN"
 		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()"
-		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
 	}
 
 	# Automatic HTTPS

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
+import { connection } from "next/server";
+import { headers } from "next/headers";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
@@ -39,11 +41,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Force dynamic rendering so the CSP nonce is available for this request.
+  await connection();
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={`${manrope.variable} font-sans min-h-screen flex flex-col`}>
@@ -53,7 +59,7 @@ export default function RootLayout({
           <ConditionalFooter />
           <CookieBanner />
         </ThemeProvider>
-        <YandexMetrika />
+        <YandexMetrika nonce={nonce} />
       </body>
     </html>
   );

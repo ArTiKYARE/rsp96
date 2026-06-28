@@ -122,3 +122,20 @@ remstroyproect.ru, www.remstroyproect.ru {
 		format json
 	}
 }
+
+# Kos-Ko landing page
+kos-ko.ru {
+	encode gzip
+
+	header -Server
+	header -X-Powered-By
+
+	reverse_proxy kos-ko:3000
+
+	tls crahercenter@gmail.com
+
+	log {
+		output file /var/log/caddy/kos-ko-access.log
+		format json
+	}
+}

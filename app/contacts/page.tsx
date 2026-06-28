@@ -6,8 +6,9 @@ function formatTelHref(phone: string) {
 }
 
 import { siteConfig, contacts } from "@/lib/data";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ContactForm } from "@/components/sections/contact-form";
-import { MapSection } from "@/components/sections/map-section";
+import { YandexMap } from "@/components/sections/yandex-map";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function ContactsPage() {
     <>
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container">
+          <Breadcrumbs className="pb-2" />
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
               Контакты
@@ -115,7 +117,7 @@ export default function ContactsPage() {
             <h2 className="text-2xl font-bold mb-2">Мы находимся в Екатеринбурге</h2>
             <p className="text-muted-foreground">{siteConfig.address}</p>
           </div>
-          <MapSection />
+          <YandexMap />
         </div>
       </section>
     </>

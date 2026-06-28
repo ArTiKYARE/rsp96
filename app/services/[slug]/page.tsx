@@ -2,12 +2,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Check, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { PhosphorIcon } from "@/components/shared/phosphor-icon";
 
 import { getServiceBySlug } from "@/lib/db";
 import { siteConfig } from "@/lib/data";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { CostCalculationForm } from "@/components/sections/cost-calculation-form";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -37,6 +46,7 @@ export default async function ServicePage({ params }: Props) {
     <>
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container">
+          <Breadcrumbs className="pb-2" />
           <Link
             href="/services/"
             className={buttonVariants({ variant: "ghost", size: "sm", className: "mb-6" })}
@@ -62,6 +72,7 @@ export default async function ServicePage({ params }: Props) {
                 alt={service.title}
                 fill
                 className="object-cover"
+                loading="lazy"
               />
             </div>
             <div className="space-y-8">
@@ -73,19 +84,40 @@ export default async function ServicePage({ params }: Props) {
                 ))}
               </div>
 
-              <Card className="border-primary/20 bg-primary/5">
+              <Card className="relative border-primary/20 bg-primary/5 card-top-accent">
                 <CardContent className="p-6">
                   <h2 className="text-xl font-bold mb-4">Что входит в услугу</h2>
                   <ul className="space-y-3">
                     {service.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
-                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <PhosphorIcon name="Check" className="h-5 w-5 text-primary shrink-0 mt-0.5" weight="bold" />
                         <span className="text-muted-foreground">{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </CardContent>
               </Card>
+
+              {service.faq && service.faq.length > 0 && (
+                <Card className="relative border-border/50 bg-card card-top-accent">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <PhosphorIcon name="Question" className="h-5 w-5 text-primary" weight="duotone" />
+                      <h2 className="text-xl font-bold">Часто задаваемые вопросы</h2>
+                    </div>
+                    <Accordion className="w-full">
+                      {service.faq.map((item, index) => (
+                        <AccordionItem key={index} value={`faq-${index}`}>
+                          <AccordionTrigger>{item.question}</AccordionTrigger>
+                          <AccordionContent>
+                            <p className="text-muted-foreground leading-relaxed">{item.answer}</p>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </CardContent>
+                </Card>
+              )}
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/contacts/" className={buttonVariants({ size: "lg", className: "bg-accent hover:bg-accent/90 text-accent-foreground" })}>
@@ -95,6 +127,8 @@ export default async function ServicePage({ params }: Props) {
                   {siteConfig.phone}
                 </a>
               </div>
+
+              <CostCalculationForm serviceTitle={service.title} />
             </div>
           </div>
         </div>

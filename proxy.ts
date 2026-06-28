@@ -79,11 +79,12 @@ function buildCspHeader(): string {
   const isDev = process.env.NODE_ENV === "development";
   return [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://mc.yandex.ru https://yandex.ru`,
+    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://mc.yandex.ru https://yandex.ru https://api-maps.yandex.ru https://*.yandex.ru https://*.yandex.net`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https:",
+    "img-src 'self' data: https: https://*.yandex.ru https://*.yandex.net",
     "font-src 'self'",
-    "connect-src 'self' https://mc.yandex.ru https://yandex.ru wss://mc.yandex.ru",
+    "connect-src 'self' https://mc.yandex.ru https://yandex.ru wss://mc.yandex.ru https://*.yandex.ru https://*.yandex.net",
+    "frame-src 'self' https://yandex.ru https://*.yandex.ru https://*.yandex.net",
     "frame-ancestors 'self'",
     "base-uri 'self'",
     "form-action 'self'",

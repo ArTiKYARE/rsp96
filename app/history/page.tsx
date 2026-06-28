@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
 import { portfolio } from "@/lib/data";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { PortfolioProject } from "@/components/sections/portfolio-project";
+import { HistoryGeographySection } from "@/components/sections/history-geography-section";
 
 export const metadata: Metadata = {
   title: "Портфолио",
@@ -18,6 +20,7 @@ export default function HistoryPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
 
         <div className="container relative z-10">
+          <Breadcrumbs className="pb-2" />
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mb-6">
               Наши проекты
@@ -49,19 +52,7 @@ export default function HistoryPage() {
         </div>
       </section>
 
-      {/* Summary */}
-      <section className="py-16 lg:py-24">
-        <div className="container">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6">
-              География наших работ
-            </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              {portfolio.description}
-            </p>
-          </div>
-        </div>
-      </section>
+      <HistoryGeographySection />
     </>
   );
 }

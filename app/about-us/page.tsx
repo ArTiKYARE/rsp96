@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 
 import { SectionTitle } from "@/components/shared/section-title";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { AdvantagesSection } from "@/components/sections/advantages-section";
 import { GeographySection } from "@/components/sections/geography-section";
 import { GallerySection } from "@/components/sections/gallery-section";
@@ -23,6 +24,7 @@ export default async function AboutPage() {
     <>
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container">
+          <Breadcrumbs className="pb-2" />
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
               О компании
@@ -48,7 +50,7 @@ export default async function AboutPage() {
               ))}
             </div>
             <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
-              <Image src={aboutContent.image} alt="Техника РСП" fill className="object-cover" />
+              <Image src={aboutContent.image} alt="Техника РСП" fill className="object-cover" loading="lazy" />
             </div>
           </div>
         </div>

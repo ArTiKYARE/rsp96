@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { FileText, MapPin, Clock, Banknote } from "lucide-react";
 
 import { SectionTitle } from "@/components/shared/section-title";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ContactForm } from "@/components/sections/contact-form";
 import { vacancies as vacanciesContent } from "@/lib/data";
 import { getVacancies } from "@/lib/db";
@@ -24,6 +25,7 @@ export default async function VacanciesPage() {
     <>
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container">
+          <Breadcrumbs className="pb-2" />
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
               {vacanciesContent.title}

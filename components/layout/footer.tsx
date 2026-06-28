@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, FileText } from "lucide-react";
 
-import { siteConfig, navigation } from "@/lib/data";
+import { siteConfig, navigation, docs } from "@/lib/data";
 import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
@@ -36,6 +36,15 @@ export function Footer() {
               <p className="flex items-start gap-2 text-muted-foreground">
                 <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                 {siteConfig.address}
+              </p>
+              <Link href="/docs/" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <FileText className="h-4 w-4 text-primary" />
+                Реквизиты
+              </Link>
+            </div>
+            <div className="pt-2">
+              <p className="text-xs text-muted-foreground">
+                ИНН {docs.requisites.find(r => r.label === "ИНН")?.value} · ОГРН {docs.requisites.find(r => r.label === "ОГРН")?.value}
               </p>
             </div>
           </div>
@@ -93,6 +102,25 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {siteConfig.name}. Все права защищены.
           </p>
+        </div>
+
+        <div className="mt-6 flex items-center justify-center md:justify-end gap-3 text-xs text-muted-foreground">
+          <span>Разработано компанией</span>
+          <a
+            href="https://kos-ko.ru/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center hover:opacity-80 transition-opacity"
+            aria-label="Kos-Ko"
+          >
+            <Image
+              src="/images/kos-ko-logo.png"
+              alt="Kos-Ko"
+              width={60}
+              height={24}
+              className="h-6 w-auto invert dark:invert-0"
+            />
+          </a>
         </div>
       </div>
     </footer>

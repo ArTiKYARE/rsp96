@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 import { SectionTitle } from "@/components/shared/section-title";
+import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { aboutContent, stats } from "@/lib/data";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 
@@ -32,9 +33,11 @@ export function AboutSection() {
               {stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-2xl bg-muted/50 p-4 text-center lg:text-left"
+                  className="relative rounded-2xl bg-card p-4 text-center lg:text-left card-top-accent shadow-sm hover:shadow-elevated transition-shadow"
                 >
-                  <p className="text-2xl md:text-3xl font-bold text-primary">{stat.value}</p>
+                  <p className="text-2xl md:text-3xl font-bold text-primary">
+                    <AnimatedCounter value={stat.value} />
+                  </p>
                   <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
                 </div>
               ))}

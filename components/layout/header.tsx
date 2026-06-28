@@ -9,6 +9,7 @@ import { useTheme } from "next-themes";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { SiteSearch } from "./site-search";
 import { siteConfig, navigation } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +19,7 @@ export function Header() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
       <div className="container flex h-18 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
@@ -67,6 +68,8 @@ export function Header() {
               {siteConfig.phone}
             </a>
           </div>
+
+          <SiteSearch />
 
           <Button
             variant="ghost"

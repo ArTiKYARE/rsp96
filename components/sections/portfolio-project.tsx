@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { MapPin, Scale, Calendar } from "lucide-react";
 import { portfolio } from "@/lib/data";
+
+import { cn } from "@/lib/utils";
 
 type Project = (typeof portfolio.projects)[number];
 
@@ -21,17 +24,19 @@ export function PortfolioProject({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className={`grid lg:grid-cols-2 gap-8 lg:gap-20 items-center ${
+      className={cn(
+        "grid lg:grid-cols-2 gap-8 lg:gap-20 items-center",
         index > 0 ? "mt-20 lg:mt-36" : ""
-      }`}
+      )}
     >
       {/* Image column */}
-      <div className={`relative ${isEven ? "lg:order-1" : "lg:order-2"}`}>
+      <div className={cn("relative", isEven ? "lg:order-1" : "lg:order-2")}>
         <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden shadow-2xl group">
           <Image
             src={project.image}
             alt={project.title}
             fill
+            loading="lazy"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
@@ -39,9 +44,10 @@ export function PortfolioProject({
 
         {/* Year badge */}
         <div
-          className={`absolute -bottom-5 ${
+          className={cn(
+            "absolute -bottom-5 bg-card border border-border/60 rounded-2xl px-6 py-4 shadow-xl",
             isEven ? "left-6 lg:left-auto lg:-right-6" : "left-6 lg:-left-6"
-          } bg-card border border-border/60 rounded-2xl px-6 py-4 shadow-xl`}
+          )}
         >
           <span className="text-xs uppercase tracking-wider text-muted-foreground block mb-1">
             Год
@@ -51,7 +57,7 @@ export function PortfolioProject({
       </div>
 
       {/* Content column */}
-      <div className={`${isEven ? "lg:order-2" : "lg:order-1"}`}>
+      <div className={cn(isEven ? "lg:order-2" : "lg:order-1")}>
         <div className="flex flex-wrap gap-2 mb-5">
           {project.tags.map((tag) => (
             <span
@@ -67,18 +73,76 @@ export function PortfolioProject({
           {project.title}
         </h2>
 
-        <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+        <p className="text-lg text-muted-foreground leading-relaxed mb-6">
           {project.description}
         </p>
 
-        {project.metric && (
-          <div className="inline-flex items-baseline gap-3 rounded-2xl bg-muted/70 border border-border/50 px-8 py-6">
-            <span className="text-5xl md:text-6xl font-bold text-primary-foreground tracking-tight">
-              {project.metric.value}
-            </span>
-            <span className="text-lg font-medium text-primary-foreground/80">
-              {project.metric.unit}
-            </span>
+        <div className="grid sm:grid-cols-2 gap-3 mb-8">
+          {project.route && (
+            <div className="flex items-start gap-3 rounded-xl bg-muted/50 border border-border/50 p-4">
+              <div className="shrink-0 mt-0.5 text-primary">
+                <MapPin className="h-4 w-4" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">Маршрут</p>
+                <p className="text-sm font-medium">{project.route}</p>
+              </div>
+            </div>
+          )}
+          {project.volume && (
+            <div className="flex items-start gap-3 rounded-xl bg-muted/50 border border-border/50 p-4">
+              <div className="shrink-0 mt-0.5 text-primary">
+                <Scale className="h-4 w-4" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">Объём</p>
+                <p className="text-sm font-medium">{project.volume}</p>
+              </div>
+            </div>
+          )}
+          {project.timeline && (
+            <div className="flex items-start gap-3 rounded-xl bg-muted/50 border border-border/50 p-4">
+              <div className="shrink-0 mt-0.5 text-primary">
+                <Calendar className="h-4 w-4" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">Сроки</p>
+                <p className="text-sm font-medium">{project.timeline}</p>
+              </div>
+            </div>
+          )}
+          {project.metric && (
+            <div className="flex items-center gap-3 rounded-xl bg-primary/10 border border-primary/20 p-4">
+              <span className="text-3xl font-bold text-primary tracking-tight">
+                {project.metric.value}
+              </span>
+              <span className="text-sm font-medium text-primary/80">
+                {project.metric.unit}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {project.gallery && project.gallery.length > 0 && (
+          <div className="grid grid-cols-2 gap-3">
+            {project.gallery.map((photo, i) => (
+              <div
+                key={i}
+                className="relative aspect-[4/3] rounded-xl overflow-hidden group/photo"
+              >
+                <Image
+                  src={photo.src}
+                  alt={photo.caption}
+                  fill
+                  loading="lazy"
+                  className="object-cover transition-transform duration-500 group-hover/photo:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover/photo:opacity-100 transition-opacity duration-300" />
+                <p className="absolute inset-x-0 bottom-0 p-2 text-xs text-white translate-y-full group-hover/photo:translate-y-0 transition-transform duration-300">
+                  {photo.caption}
+                </p>
+              </div>
+            ))}
           </div>
         )}
       </div>

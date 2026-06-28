@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, Plus, Trash, Upload } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,13 @@ const serviceSchema = z.object({
       value: z.string().min(1, "Пункт не может быть пустым"),
     })
   ),
+  faq: z.array(
+    z.object({
+      question: z.string().min(1, "Вопрос не может быть пустым"),
+      answer: z.string().min(1, "Ответ не может быть пустым"),
+    })
+  ).optional(),
+  showOnHome: z.boolean().optional(),
 });
 
 type ServiceFormData = z.infer<typeof serviceSchema>;
@@ -58,15 +66,28 @@ export function ServiceForm({ service }: ServiceFormProps) {
           description: service.description,
           image: service.image,
           features: service.features.map((f) => ({ value: f })),
+          faq: service.faq?.map((item) => ({ question: item.question, answer: item.answer })) ?? [],
+          showOnHome: service.showOnHome ?? false,
         }
       : {
           features: [{ value: "" }],
+          faq: [],
+          showOnHome: false,
         },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "features",
+  });
+
+  const {
+    fields: faqFields,
+    append: appendFaq,
+    remove: removeFaq,
+  } = useFieldArray({
+    control,
+    name: "faq",
   });
 
   const imageValue = watch("image");
@@ -107,6 +128,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
     const payload = {
       ...data,
       features: data.features.map((f) => f.value),
+      faq: data.faq?.map((item) => ({ question: item.question, answer: item.answer })) ?? [],
     };
 
     try {
@@ -270,6 +292,73 @@ export function ServiceForm({ service }: ServiceFormProps) {
         >
           <Plus className="mr-2 h-4 w-4" />
           Добавить пункт
+        </Button>
+      </div>
+
+      <div className="flex items-start gap-3 rounded-lg border border-border/50 p-4">
+        <Controller
+          name="showOnHome"
+          control={control}
+          render={({ field }) => (
+            <Checkbox
+              id="showOnHome"
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+          )}
+        />
+        <div className="space-y-1">
+          <Label htmlFor="showOnHome">Показывать на главной странице</Label>
+          <p className="text-xs text-muted-foreground">
+            На главной отображается не более 4 выбранных услуг.
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <Label>Часто задаваемые вопросы (FAQ)</Label>
+        {faqFields.map((field, index) => (
+          <div key={field.id} className="space-y-2 rounded-lg border border-border/50 p-4">
+            <div className="flex items-start gap-2">
+              <Input
+                placeholder="Вопрос"
+                {...register(`faq.${index}.question` as const)}
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => removeFaq(index)}
+              >
+                <Trash className="h-4 w-4 text-destructive" />
+              </Button>
+            </div>
+            {errors.faq?.[index]?.question && (
+              <p className="text-sm text-destructive">
+                {errors.faq[index]?.question?.message}
+              </p>
+            )}
+            <Textarea
+              placeholder="Ответ"
+              rows={3}
+              {...register(`faq.${index}.answer` as const)}
+            />
+            {errors.faq?.[index]?.answer && (
+              <p className="text-sm text-destructive">
+                {errors.faq[index]?.answer?.message}
+              </p>
+            )}
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => appendFaq({ question: "", answer: "" })}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Добавить вопрос
         </Button>
       </div>
 

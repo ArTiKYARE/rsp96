@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Phone, Mail, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { PhosphorIcon } from "@/components/shared/phosphor-icon";
 
-import { SectionTitle } from "@/components/shared/section-title";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/lib/data";
 
 export function CTASection() {
@@ -13,7 +13,7 @@ export function CTASection() {
     <section className="py-20 lg:py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-hero-glow" />
       <div className="container relative z-10">
-        <div className="rounded-3xl bg-gradient-to-br from-primary to-primary/80 p-8 md:p-12 lg:p-16 text-primary-foreground shadow-2xl">
+        <div className="rounded-3xl bg-gradient-to-br from-primary to-primary/80 p-8 md:p-12 lg:p-16 text-primary-foreground shadow-glow ring-1 ring-primary-foreground/10">
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -42,7 +42,7 @@ export function CTASection() {
                 className="flex items-center gap-4 rounded-2xl bg-white/10 p-4 backdrop-blur-sm hover:bg-white/20 transition-colors"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
-                  <Phone className="h-5 w-5" />
+                  <PhosphorIcon name="Phone" className="h-5 w-5" weight="bold" />
                 </div>
                 <div>
                   <p className="text-sm text-primary-foreground/70">Телефон</p>
@@ -54,7 +54,7 @@ export function CTASection() {
                 className="flex items-center gap-4 rounded-2xl bg-white/10 p-4 backdrop-blur-sm hover:bg-white/20 transition-colors"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
-                  <Mail className="h-5 w-5" />
+                  <PhosphorIcon name="Mail" className="h-5 w-5" weight="bold" />
                 </div>
                 <div>
                   <p className="text-sm text-primary-foreground/70">Email</p>

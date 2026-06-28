@@ -20,6 +20,11 @@ export interface AdminConfig {
   users: AdminUser[];
 }
 
+export interface ServiceFaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface Service {
   id: string;
   slug: string;
@@ -28,12 +33,17 @@ export interface Service {
   description: string;
   image: string;
   features: string[];
+  faq?: ServiceFaqItem[];
+  showOnHome?: boolean;
 }
 
 export interface GalleryItem {
   id: string;
   src: string;
   alt: string;
+  title?: string;
+  location?: string;
+  description?: string;
 }
 
 export interface ServiceInput {
@@ -43,11 +53,16 @@ export interface ServiceInput {
   description: string;
   image: string;
   features: string[];
+  faq?: ServiceFaqItem[];
+  showOnHome?: boolean;
 }
 
 export interface GalleryInput {
   src: string;
   alt: string;
+  title?: string;
+  location?: string;
+  description?: string;
 }
 
 export interface Vacancy {

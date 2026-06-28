@@ -51,6 +51,13 @@ export async function saveServices(services: Service[]): Promise<void> {
   return writeJsonFile(SERVICES_FILE, services);
 }
 
+export async function getHomeServices(limit = 4): Promise<Service[]> {
+  const services = await getServices();
+  return services
+    .filter((s) => s.showOnHome)
+    .slice(0, limit);
+}
+
 // Gallery
 export async function getGallery(): Promise<GalleryItem[]> {
   return readJsonFile<GalleryItem[]>(GALLERY_FILE, []);

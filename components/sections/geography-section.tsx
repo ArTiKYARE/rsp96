@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
+import { PhosphorIcon } from "@/components/shared/phosphor-icon";
 
 import { SectionTitle } from "@/components/shared/section-title";
 import { geography } from "@/lib/data";
@@ -26,6 +26,7 @@ export function GeographySection() {
               src={geography.image}
               alt="География работы РСП"
               fill
+              loading="lazy"
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
@@ -47,8 +48,8 @@ export function GeographySection() {
                 variants={fadeInUp}
                 className="flex items-start gap-4 rounded-2xl bg-muted/50 p-4"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <MapPin className="h-5 w-5" />
+                <div className="shrink-0 icon-box">
+                  <PhosphorIcon name="MapPin" className="h-5 w-5" weight="duotone" />
                 </div>
                 <div>
                   <p className="font-semibold">{region.name}</p>

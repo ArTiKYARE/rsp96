@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Plus, Pencil, ExternalLink } from "lucide-react";
+import { Plus, Pencil, ExternalLink, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ServiceDeleteButton } from "@/components/admin/service-delete-button";
+import { Badge } from "@/components/ui/badge";
 import { getServices } from "@/lib/db";
 import { requirePermission } from "@/lib/auth";
 
@@ -69,7 +70,15 @@ export default async function AdminServicesPage() {
                       />
                     </div>
                     <div>
-                      <h3 className="font-semibold">{service.title}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold">{service.title}</h3>
+                        {service.showOnHome && (
+                          <Badge variant="secondary" className="gap-1">
+                            <Home className="h-3 w-3" />
+                            На главной
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-sm text-muted-foreground">
                         /services/{service.slug}/
                       </p>

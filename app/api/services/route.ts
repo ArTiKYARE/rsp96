@@ -38,6 +38,10 @@ export async function POST(request: NextRequest) {
       description: body.description,
       image: body.image,
       features: Array.isArray(body.features) ? body.features.filter(Boolean) : [],
+      faq: Array.isArray(body.faq)
+        ? body.faq.filter((item) => item && item.question && item.answer)
+        : [],
+      showOnHome: body.showOnHome === true,
     };
 
     services.push(newService);

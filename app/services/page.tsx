@@ -1,10 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
 
 import { getServices } from "@/lib/db";
-import { Card, CardContent } from "@/components/ui/card";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { ServiceCard } from "@/components/service-card";
 import { buttonVariants } from "@/components/ui/button";
 
 export const metadata: Metadata = {
@@ -22,6 +21,7 @@ export default async function ServicesPage() {
     <>
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container">
+          <Breadcrumbs className="pb-2" />
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
               Услуги
@@ -41,29 +41,7 @@ export default async function ServicesPage() {
           ) : (
             <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
               {services.map((service) => (
-                <Link key={service.id} href={`/services/${service.slug}/`} className="group block h-full">
-                  <Card className="h-full overflow-hidden border-border/50 bg-card transition-all duration-300 hover:shadow-xl hover:border-primary/30">
-                    <div className="relative aspect-[16/9] overflow-hidden">
-                      <Image
-                        src={service.image}
-                        alt={service.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                    </div>
-                    <CardContent className="p-6">
-                      <h2 className="text-xl md:text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
-                        {service.title}
-                      </h2>
-                      <p className="text-muted-foreground mb-4">{service.shortDescription}</p>
-                      <span className="inline-flex items-center text-sm font-medium text-primary">
-                        Подробнее
-                        <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </span>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <ServiceCard key={service.id} service={service} variant="minimal" />
               ))}
             </div>
           )}

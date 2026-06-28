@@ -53,6 +53,10 @@ export async function PUT(request: NextRequest, { params }: Params) {
       features: Array.isArray(body.features)
         ? body.features.filter(Boolean)
         : existing.features,
+      faq: Array.isArray(body.faq)
+        ? body.faq.filter((item) => item && item.question && item.answer)
+        : existing.faq,
+      showOnHome: body.showOnHome === true ? true : body.showOnHome === false ? false : existing.showOnHome,
     };
 
     services[index] = updated;

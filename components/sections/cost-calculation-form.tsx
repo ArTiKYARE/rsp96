@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Send, Check, Loader2 } from "lucide-react";
+import { Calculator, Check, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,12 +18,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const formSchema = z.object({
   name: z.string().min(2, "Укажите имя"),
   phone: z.string().min(10, "Укажите корректный телефон"),
-  email: z.string().email("Укажите корректный email").optional().or(z.literal("")),
+  cargo: z.string().optional(),
+  route: z.string().optional(),
   message: z.string().optional(),
   consent: z.boolean().refine((val) => val === true, {
     message: "Необходимо согласие на обработку персональных данных",
@@ -33,7 +34,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export function ContactForm() {
+export function CostCalculationForm({ serviceTitle }: { serviceTitle?: string }) {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
   const form = useForm<FormData>({
@@ -41,7 +42,8 @@ export function ContactForm() {
     defaultValues: {
       name: "",
       phone: "",
-      email: "",
+      cargo: "",
+      route: "",
       message: "",
       consent: false,
       website: "",
@@ -55,7 +57,10 @@ export function ContactForm() {
       const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, source: "contacts" }),
+        body: JSON.stringify({
+          ...data,
+          source: serviceTitle ? `service:${serviceTitle}` : "service",
+        }),
       });
       if (!res.ok) throw new Error();
       setStatus("success");
@@ -74,7 +79,7 @@ export function ContactForm() {
           </div>
           <h3 className="text-xl font-bold mb-2">Заявка отправлена</h3>
           <p className="text-muted-foreground">
-            Спасибо за обращение! Мы свяжемся с вами в ближайшее время.
+            Мы рассчитаем стоимость и свяжемся с вами в ближайшее время.
           </p>
         </CardContent>
       </Card>
@@ -83,61 +88,94 @@ export function ContactForm() {
 
   return (
     <Card className="border-border/50 shadow-lg">
-      <CardContent className="p-6 md:p-8">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-xl">
+          <Calculator className="h-5 w-5 text-primary" />
+          Узнать стоимость
+        </CardTitle>
+        <CardDescription>
+          Оставьте данные — мы подготовим индивидуальный расчёт для вашей задачи.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Имя</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ваше имя" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Телефон</FormLabel>
-                  <FormControl>
-                    <Input type="tel" placeholder="+7 (___) ___-__-__" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="email@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Имя</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ваше имя" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Телефон</FormLabel>
+                    <FormControl>
+                      <Input type="tel" placeholder="+7 (___) ___-__-__" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="cargo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Груз / объём</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Например, 90 тонн щебня" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="route"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Маршрут</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Откуда — куда" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Сообщение</FormLabel>
+                  <FormLabel>Комментарий</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Расскажите о задаче..." rows={4} {...field} />
+                    <Textarea
+                      placeholder="Особенности груза, сроки, пожелания"
+                      rows={3}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             {/* Honeypot */}
             <input
               type="text"
@@ -152,9 +190,12 @@ export function ContactForm() {
               control={form.control}
               name="consent"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormItem className="flex flex-row items-start gap-3 space-y-0">
                   <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
                   <div className="space-y-1 leading-none">
                     <FormLabel className="text-sm font-normal text-muted-foreground">
@@ -165,10 +206,11 @@ export function ContactForm() {
                 </FormItem>
               )}
             />
+
             <Button
               type="submit"
-              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
               disabled={status === "submitting"}
+              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
             >
               {status === "submitting" ? (
                 <>
@@ -177,11 +219,12 @@ export function ContactForm() {
                 </>
               ) : (
                 <>
-                  <Send className="mr-2 h-4 w-4" />
-                  Отправить заявку
+                  <Calculator className="mr-2 h-4 w-4" />
+                  Рассчитать стоимость
                 </>
               )}
             </Button>
+
             {status === "error" && (
               <p className="text-sm text-destructive text-center">
                 Произошла ошибка. Попробуйте позже.

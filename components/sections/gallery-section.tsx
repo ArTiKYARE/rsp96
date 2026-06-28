@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PhosphorIcon } from "@/components/shared/phosphor-icon";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Zoom } from "yet-another-react-lightbox/plugins";
@@ -74,7 +74,8 @@ export function GallerySection({ gallery }: GallerySectionProps) {
   }
 
   return (
-    <section className="py-20 lg:py-28 bg-muted/30 overflow-hidden">
+    <section className="py-20 lg:py-28 bg-brand-light relative overflow-hidden">
+      <div className="absolute inset-0 bg-dot-pattern opacity-30" />
       <div className="container">
         <motion.div
           initial="hidden"
@@ -92,7 +93,7 @@ export function GallerySection({ gallery }: GallerySectionProps) {
 
           <motion.div
             variants={fadeInUp}
-            className="relative group/gallery mt-10"
+            className="relative group/gallery mt-10 w-screen left-1/2 -translate-x-1/2"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
@@ -114,17 +115,17 @@ export function GallerySection({ gallery }: GallerySectionProps) {
               type="button"
               onClick={scrollLeft}
               aria-label="Прокрутить влево"
-              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-background/90 text-foreground shadow-lg backdrop-blur-sm opacity-0 transition-opacity duration-300 group-hover/gallery:opacity-100 hover:bg-background focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-0"
+              className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-background/90 text-foreground shadow-lg backdrop-blur-sm opacity-0 transition-opacity duration-300 group-hover/gallery:opacity-100 hover:bg-background focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-0"
             >
-              <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+              <PhosphorIcon name="CaretLeft" className="h-5 w-5 md:h-6 md:w-6" weight="bold" />
             </button>
             <button
               type="button"
               onClick={scrollRight}
               aria-label="Прокрутить вправо"
-              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-background/90 text-foreground shadow-lg backdrop-blur-sm opacity-0 transition-opacity duration-300 group-hover/gallery:opacity-100 hover:bg-background focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-0"
+              className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-background/90 text-foreground shadow-lg backdrop-blur-sm opacity-0 transition-opacity duration-300 group-hover/gallery:opacity-100 hover:bg-background focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-0"
             >
-              <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+              <PhosphorIcon name="CaretRight" className="h-5 w-5 md:h-6 md:w-6" weight="bold" />
             </button>
           </motion.div>
         </motion.div>
@@ -182,11 +183,17 @@ function GalleryRow({ items, delay, isPaused, onSelect, className }: GalleryRowP
               alt={item.alt}
               fill
               sizes="(max-width: 768px) 256px, 320px"
+              loading="lazy"
               className="object-cover transition-all duration-500 group-hover/gallery:opacity-60 group-hover/item:opacity-100 group-hover/item:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 transition-opacity duration-300 group-hover/item:opacity-100" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/0 opacity-0 transition-opacity duration-300 group-hover/item:opacity-100" />
             <div className="absolute inset-x-0 bottom-0 p-3 translate-y-full transition-transform duration-300 group-hover/item:translate-y-0">
-              <p className="text-sm font-medium text-white line-clamp-2">{item.alt}</p>
+              <p className="text-sm font-bold text-white line-clamp-1">{item.title || item.alt}</p>
+              {(item.location || item.description) && (
+                <p className="text-xs text-white/80 line-clamp-2 mt-0.5">
+                  {item.location}{item.location && item.description ? " · " : ""}{item.description}
+                </p>
+              )}
             </div>
           </button>
         ))}

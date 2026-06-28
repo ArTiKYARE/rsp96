@@ -8,6 +8,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ConditionalHeader } from "@/components/layout/conditional-header";
 import { ConditionalFooter } from "@/components/layout/conditional-footer";
 import { CookieBanner } from "@/components/layout/cookie-banner";
+import { ScrollToTop } from "@/components/layout/scroll-to-top";
+import { FloatingCTA } from "@/components/layout/floating-cta";
+import { MessengersWidget } from "@/components/layout/messengers-widget";
 import { YandexMetrika } from "@/components/layout/yandex-metrika";
 import { siteConfig } from "@/lib/data";
 
@@ -55,9 +58,12 @@ export default async function RootLayout({
       <body className={`${manrope.variable} font-sans min-h-screen flex flex-col`}>
         <ThemeProvider>
           <ConditionalHeader />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pt-18">{children}</main>
           <ConditionalFooter />
           <CookieBanner />
+          <ScrollToTop />
+          <FloatingCTA />
+          <MessengersWidget />
         </ThemeProvider>
         <YandexMetrika nonce={nonce} />
       </body>
